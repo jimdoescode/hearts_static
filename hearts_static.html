@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hearts Distribution &#9829; Coming Soon</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23C1495A' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F5F0E8;
+      --ink: #1A1410;
+      --rose: #C1495A;
+      --rose-light: #D4707E;
+      --gold: #B8965A;
+      --muted: #7A6E65;
+      --border: rgba(26,20,16,0.12);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* Decorative background elements */
+    .bg-circle-1 {
+      position: fixed;
+      width: 600px; 
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(193,73,90,0.07) 0%, transparent 70%);
+      top: -200px; 
+      right: -100px;
+      pointer-events: none;
+    }
+    
+    .bg-circle-2 {
+      position: fixed;
+      width: 400px; 
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(184,150,90,0.06) 0%, transparent 70%);
+      bottom: -100px; 
+      left: -100px;
+      pointer-events: none;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+    }
+
+    /* Header mark */
+    .site-mark {
+      position: absolute;
+      top: 16px; 
+      left: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.1s forwards;
+    }
+    
+    .heart-icon {
+      width: 18px; 
+      height: 18px;
+      fill: var(--rose);
+    }
+    .site-mark span {
+      font-family: 'Jost', sans-serif;
+      font-weight: 200;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Main content */
+    main {
+      text-align: center;
+      max-width: 680px;
+      width: 100%;
+      margin-bottom: 50px;
+    }
+
+    .eyebrow {
+      font-family: 'Jost', sans-serif;
+      font-weight: 200;
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(56px, 10vw, 96px);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.3s forwards;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(18px, 3vw, 24px);
+      color: var(--muted);
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.45s forwards;
+    }
+
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      margin: 0 auto 48px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+
+    .description {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 52px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.55s forwards;
+    }
+
+    /* Email form */
+    .form-wrap {
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.65s forwards;
+    }
+ 
+    .form-label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+ 
+    .email-form {
+      display: flex;
+      gap: 0;
+      max-width: 440px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(4px);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .email-form:focus-within {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(193,73,90,0.08);
+    }
+ 
+    .email-form input[type="email"] {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 16px 20px;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      color: var(--ink);
+      min-width: 0;
+    }
+    .email-form input::placeholder { color: #B0A89F; }
+ 
+    .email-form button {
+      background: var(--rose);
+      color: #fff;
+      border: none;
+      padding: 16px 28px;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.25s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .email-form button:hover { background: var(--rose-light); }
+ 
+    .form-consent {
+      margin-top: 14px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .form-consent a {
+      color: var(--rose);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(193,73,90,0.3);
+      transition: border-color 0.2s;
+    }
+    .form-consent a:hover { border-color: var(--rose); }
+    
+    .firebase-banner {
+      display: none; 
+      position: fixed; 
+      bottom: 72px;
+      transform: translateX(-50%); 
+      z-index: 50;
+      background: var(--ink); 
+      color: var(--cream);
+      padding: 14px 20px; 
+      max-width: 440px; 
+      width: calc(100% - 48px);
+      align-items: flex-start; 
+      gap: 12px; 
+      font-size: 12px;
+      line-height: 1.6; 
+      font-weight: 300;
+       letter-spacing: 0.02em;
+    }
+    .firebase-banner.visible { display: flex; animation: fadeUp 0.4s ease forwards; }
+    .firebase-banner svg { flex-shrink: 0; margin-top: 2px; }
+    .firebase-banner strong { display: block; font-weight: 400; margin-bottom: 2px; letter-spacing: 0.05em; }
+    .firebase-banner a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(184,150,90,0.4); }
+    .firebase-banner a:hover { border-color: var(--gold); }
+ 
+    .signup-tabs {
+      display: flex;
+      max-width: 440px;
+      margin: 24px auto;
+      border-bottom: 1px solid var(--border);
+    }
+    .signup-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 12px 0;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .signup-tab::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 2px;
+      background: var(--rose);
+      transform: scaleX(0);
+      transition: transform 0.25s ease;
+    }
+    .signup-tab.active {
+      color: var(--ink);
+    }
+    .signup-tab.active::after {
+      transform: scaleX(1);
+    }
+    .signup-tab:hover { color: var(--rose); }
+ 
+    .signup-panel { display: none; }
+    .signup-panel.active { display: block; }
+    
+    /* Success state */
+    .success-msg {
+      display: none;
+      align-items: center;
+      justify-content: space-evenly;
+      gap: 10px;
+      padding: 18px 28px;
+      background: rgba(193,73,90,0.06);
+      border: 1px solid rgba(193,73,90,0.2);
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .success-msg svg { flex-shrink: 0; }
+    .success-msg p {
+      font-size: 13px;
+      color: var(--rose);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      text-align: left;
+    }
+
+    /* Footer */
+    footer {
+      transform: translateX(-50%);
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.9s forwards;
+      white-space: nowrap;
+    }
+    .footer-copy {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    footer a {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--rose); }
+    footer .dot {
+      color: var(--border);
+      flex-shrink: 0;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,20,16,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--cream);
+      max-width: 45%;
+      width: 100%;
+      max-height: 80vh;
+      overflow: hidden auto;
+      padding: 48px;
+      position: relative;
+      border-top: 3px solid var(--rose);
+    }
+    .modal h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 32px;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+    .modal .modal-date {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    .modal p, .modal li {
+      font-size: 14px;
+      line-height: 1.9;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .modal h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 20px;
+      color: var(--ink);
+      margin: 28px 0 10px;
+    }
+    .modal ul { padding-left: 20px; }
+    .modal-close {
+      position: sticky;
+      top: -3em;
+      float: right;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+      margin: -3em -3em 0 0;
+    }
+    .modal-close:hover { color: var(--rose); }
+
+    @media (max-width: 520px) {
+      .modal { padding: 32px 24px; }
+      .email-form { flex-direction: column; }
+      .email-form button { padding: 14px; }
+      footer { gap: 16px; flex-direction: column-reverse; }
+      footer .dot { display: none; }
+      .wrapper { padding-bottom: 16px; }
+      .site-mark { left: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-circle-1"></div>
+<div class="bg-circle-2"></div>
+
+<div class="wrapper">
+
+  <!-- Site mark -->
+  <div class="site-mark">
+    <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>
+    <span>Hearts Distribution</span>
+  </div>
+
+  <!-- Main content -->
+  <main class="main">
+    <p class="eyebrow">Less waiting. More selling.</p>
+    <h1>Distribution,<br/><em>Direct</em></h1>
+    <p class="subtitle">Tier 2, simplified</p>
+    <div class="divider"></div>
+    <p class="description">
+      Traditional alcohol distribution takes your margin, your relationships, and your control. 
+      Hearts wants to give that back — a direct channel between alcohol producers and retailers nationwide, with full transparency on pricing, orders, and compliance.
+    </p>
+
+    <!-- Email signup -->
+    <div class="form-wrap">
+      <label class="form-label">Sign up to get early access!</label>
+ 
+      <!-- Tabs -->
+      <div class="signup-tabs">
+        <button class="signup-tab active" data-tab="producer">I'm a Producer</button>
+        <button class="signup-tab" data-tab="retailer">I'm a Retailer</button>
+      </div>
+ 
+      <!-- Producer panel -->
+      <div class="signup-panel active" id="panel-producer">
+        <div class="email-form" id="emailForm-producer">
+          <input type="email" id="email-producer" placeholder="your@email.com" autocomplete="email" />
+          <button type="button" data-submit="producer">Notify Me</button>
+        </div>
+        <div class="success-msg" id="successMsg-producer">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C1495A" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <p>You're on our list!<br>We'll be in touch soon.</p>
+        </div>
+      </div>
+ 
+      <!-- Retailer panel -->
+      <div class="signup-panel" id="panel-retailer">
+        <div class="email-form" id="emailForm-retailer">
+          <input type="email" id="email-retailer" placeholder="your@email.com" autocomplete="email" />
+          <button type="button" data-submit="retailer">Notify Me</button>
+        </div>
+        <div class="success-msg" id="successMsg-retailer">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C1495A" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <p>You're on our list!<br>We'll be in touch soon.</p>
+        </div>
+      </div>
+
+      <p class="form-consent">
+        By signing up, you agree to our
+        <a href="#" data-modal="tos">Terms of Service</a>
+        and
+        <a href="#" data-modal="privacy">Privacy Policy</a>.
+        No spam, ever.
+      </p>
+    </div>
+  </main>
+
+  <div class="firebase-banner" id="firebaseBanner" role="alert">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B8965A" stroke-width="2" stroke-linecap="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <div>
+      <strong>Signup temporarily unavailable</strong>
+      A browser extension or network setting is blocking our signup service.
+      Try disabling your ad blocker, or reach us directly at
+      <a href="mailto:support@heartsdistro.com">support@heartsdistro.com</a>.
+    </div>
+  </div>
+
+  <!-- Footer links -->
+  <footer>
+    <span class="footer-copy">&copy; Hearts Distribution LLC</span>
+    <span class="dot">&#9829;</span>
+    <a href="#" data-modal="tos">Terms of Service</a>
+    <span class="dot">&#9829;</span>
+    <a href="#" data-modal="privacy">Privacy Policy</a>
+  </footer>
+</div>
+
+<!-- Terms of Service Modal -->
+<div class="modal-overlay" id="modal-tos" data-overlay="tos">
+  <div class="modal">
+    <button class="modal-close" data-close="tos">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <h2>Terms of Service</h2>
+    <p class="modal-date">Effective Date: March 2026</p>
+
+    <p>Welcome to Hearts Distribution ("Company," "we," "us," or "our"). By accessing our website at heartsdistro.com and signing up for updates, you agree to the following terms.</p>
+
+    <h3>1. Use of This Website</h3>
+    <p>This website is provided for informational purposes and to collect early-interest registrations. You agree to use this site only for lawful purposes and in a way that does not infringe the rights of others.</p>
+
+    <h3>2. Email Registration</h3>
+    <p>By submitting your email address, you consent to receive communications from Hearts Distribution LLC about our launch, updates, and related announcements. You may unsubscribe at any time by following the unsubscribe instructions in any email we send.</p>
+
+    <h3>3. Intellectual Property</h3>
+    <p>All content on this website — including text, logos, and design — is the property of Hearts Distribution LLC and may not be reproduced without express written permission.</p>
+
+    <h3>4. Disclaimers</h3>
+    <p>This website is provided "as is." We make no warranties about the accuracy or completeness of the information presented. Product features, timelines, and availability are subject to change.</p>
+
+    <h3>5. Limitation of Liability</h3>
+    <p>To the fullest extent permitted by law, Hearts Distribution LLC shall not be liable for any indirect, incidental, or consequential damages arising from your use of this site.</p>
+
+    <h3>6. Governing Law</h3>
+    <p>These terms are governed by the laws of the state in which Hearts Distribution LLC is registered, without regard to conflict-of-law principles.</p>
+
+    <h3>7. Changes to These Terms</h3>
+    <p>We may update these terms from time to time. Continued use of the site constitutes acceptance of any revised terms.</p>
+
+    <h3>8. Contact</h3>
+    <p>Questions about these terms? Reach us at <a href="mailto:support@heartsdistro.com" style="color:var(--rose)">support@heartsdistro.com</a>.</p>
+  </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal-overlay" id="modal-privacy" data-overlay="privacy">
+  <div class="modal">
+    <button class="modal-close" data-close="privacy">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <h2>Privacy Policy</h2>
+    <p class="modal-date">Effective Date: March 2026</p>
+
+    <p>Hearts Distribution LLC ("we," "us," "our") is committed to protecting your personal information. This Privacy Policy explains what we collect, how we use it, and your rights.</p>
+
+    <h3>1. Information We Collect</h3>
+    <p>We currently collect only your email address when you sign up for early access. We may also collect basic analytics data (page views, browser type, country) through our hosting provider.</p>
+
+    <h3>2. How We Use Your Information</h3>
+    <p>Your email address is used solely to:</p>
+    <ul>
+      <li>Send you updates about the Hearts Distribution launch</li>
+      <li>Notify you of early access opportunities</li>
+      <li>Communicate important announcements</li>
+    </ul>
+    <p>We will never sell, rent, or share your email address with third parties for marketing purposes.</p>
+
+    <h3>3. Data Storage</h3>
+    <p>Email addresses are stored securely. We use industry-standard measures to protect your data from unauthorized access.</p>
+
+    <h3>4. Third-Party Services</h3>
+    <p>We may use third-party email delivery services (such as Mailchimp or SendGrid) to manage our mailing list. These providers are contractually prohibited from using your data for their own purposes.</p>
+
+    <h3>5. Your Rights</h3>
+    <p>You have the right to access, correct, or delete your personal data at any time. To exercise these rights or to unsubscribe, email us at <a href="mailto:support@heartsdistro.com" style="color:var(--rose)">support@heartsdistro.com</a>.</p>
+
+    <h3>6. Cookies</h3>
+    <p>This site may use minimal cookies for analytics. You can disable cookies in your browser settings at any time.</p>
+
+    <h3>7. Children's Privacy</h3>
+    <p>This site is not directed at children under 13. We do not knowingly collect personal information from minors.</p>
+
+    <h3>8. Changes to This Policy</h3>
+    <p>We may update this Privacy Policy as our service evolves. We will notify registered users of material changes via email.</p>
+
+    <h3>9. Contact</h3>
+    <p>Privacy questions? Contact us at <a href="mailto:support@heartsdistro.com" style="color:var(--rose)">support@heartsdistro.com</a>.</p>
+  </div>
+</div>  
+
+<script>  
+  // --- Tab switching ---
+  function switchTab(type) {
+    document.querySelectorAll('.signup-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.signup-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`[data-tab="${type}"]`).classList.add('active');
+    document.getElementById('panel-' + type).classList.add('active');
+  }
+  
+  // --- Modal
+  function openModal(name) {
+    document.getElementById('modal-' + name).classList.add('open');
+    document.body.style.overflow = 'hidden';
+    history.pushState(null, '', '#' + name);
+  }
+  
+  function closeModal(name) {
+    document.getElementById('modal-' + name).classList.remove('open');
+    document.body.style.overflow = '';
+    history.pushState(null, '', window.location.pathname);
+  }
+ 
+  // --- Event listeners ---
+ 
+  // Tab buttons
+  document.querySelectorAll('[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+ 
+  
+  // Open modal — any element with data-modal attribute
+  document.querySelectorAll('[data-modal]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      openModal(el.dataset.modal);
+    });
+  });
+ 
+  // Close buttons inside modals
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.close));
+  });
+ 
+  // Click on backdrop to close
+  document.querySelectorAll('[data-overlay]').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) closeModal(overlay.dataset.overlay);
+    });
+  });
+ 
+  // Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') ['tos', 'privacy'].forEach(closeModal);
+  });  
+  
+  // On page load, check for hash and open matching modal
+  document.addEventListener('DOMContentLoaded', function() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'tos' || hash === 'privacy') openModal(hash);
+  });
+</script>
+<script type="module">
+  const firebaseConfig = {
+    apiKey:            "YOUR_API_KEY",
+    authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId:         "YOUR_PROJECT_ID",
+    storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId:             "YOUR_APP_ID"
+  };
+ 
+  // --- Firebase blocked detection ---
+  function showFirebaseBanner() {
+    document.getElementById('firebaseBanner').classList.add('visible');
+    document.querySelectorAll('[data-submit]').forEach(btn => {
+      btn.disabled = true;
+      btn.title = 'Signup unavailable — see notice below';
+    });
+  }
+ 
+  let initializeApp, getFirestore, collection, addDoc, serverTimestamp;
+  let firebaseReady = false;
+ 
+  try {
+    ({ initializeApp }                                     = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js'));
+    ({ getFirestore, collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js'));
+    firebaseReady = true;
+  } catch (err) {
+    console.warn('Firebase blocked or unavailable:', err);
+    showFirebaseBanner();
+  }
+ 
+  const app = firebaseReady ? initializeApp(firebaseConfig) : null;
+  const db  = firebaseReady ? getFirestore(app) : null;
+  
+  document.querySelectorAll('[data-submit]').forEach(btn => {
+    btn.addEventListener('click', () => handleSubmit(btn.dataset.submit));
+  });
+ 
+  // --- Email submission ---
+  async function handleSubmit(type) {
+    if (!firebaseReady) { showFirebaseBanner(); return; }
+  
+    const input = document.getElementById('email-' + type);
+    const btn   = document.querySelector(`[data-submit="${type}"]`);
+    const email = input.value.trim();
+ 
+    if (!email || !email.includes('@')) {
+      input.style.outline = '2px solid var(--rose)';
+      input.focus();
+      setTimeout(() => input.style.outline = '', 1500);
+      return;
+    }
+ 
+    btn.textContent = '...';
+    btn.disabled = true;
+ 
+    try {
+      await addDoc(collection(db, 'signups'), {
+        email,
+        type,
+        timestamp: serverTimestamp()
+      });
+ 
+      document.getElementById('emailForm-' + type).style.display = 'none';
+      document.getElementById('successMsg-' + type).style.display = 'flex';
+ 
+    } catch (err) {
+      console.error('Firestore error:', err);
+      btn.textContent = 'Notify Me';
+      btn.disabled = false;
+      input.style.outline = '2px solid var(--rose)';
+      input.placeholder = 'Something went wrong — try again';
+      setTimeout(() => {
+        input.style.outline = '';
+        input.placeholder = 'your@email.com';
+      }, 3000);
+    }
+  }
+ 
+   // Enter key on email inputs
+  ['producer', 'retailer'].forEach(type => {
+    document.getElementById('email-' + type).addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleSubmit(type);
+    });
+  });
+ 
+</script>
+</body>
+</html>
