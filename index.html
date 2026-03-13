@@ -725,7 +725,7 @@
   }
  
   const app = firebaseReady ? initializeApp(firebaseConfig) : null;
-  const db  = firebaseReady ? getFirestore(app) : null;
+  const db  = firebaseReady ? getFirestore(app, 'email-collection') : null;
   
   document.querySelectorAll('[data-submit]').forEach(btn => {
     btn.addEventListener('click', () => handleSubmit(btn.dataset.submit));
